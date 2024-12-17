@@ -1,0 +1,65 @@
+import math
+
+def get_float(prompt, min_val, max_val):
+    while True:
+        try:
+            value = float(input(prompt))
+            if min_val <= value <= max_val:
+                return value
+            else:
+                print(f"Please enter a number between {min_val} and {max_val}.")
+        except ValueError:
+            print("Invalid input. Please enter a valid number.")
+
+def get_user_input(prompt):
+    return input(prompt)
+
+# Step 1: Define criteria for outfit selection
+criteria = ["Weather suitability", "Comfort", "Formality", "Style"]
+weights = {"Weather suitability": 0.4, "Comfort": 0.3, "Formality": 0.2, "Style": 0.1}
+
+print("\nCriteria and their weights:")
+for criterion, weight in weights.items():
+    print(f"- {criterion}: {weight * 100}%")
+
+# Step 2: Gather options (outfits)
+options = []
+print("\nStep 2: Enter your outfit options (e.g., 'Casual Jeans and T-Shirt', 'Formal Suit').")
+print("Type 'done' when finished.")
+while True:
+    option = get_user_input("Enter an outfit option: ").strip()
+    if option.lower() == 'done':
+        if len(options) < 2:
+            print("Please enter at least two options.")
+            continue
+        break
+    elif option:
+        options.append(option)
+
+# Step 3: Rate each outfit for every criterion
+scores = {option: {} for option in options}
+
+print("\nStep 3: Rate each outfit for the following criteria (scale: 0-10).\n")
+for option in options:
+    print(f"\nRatings for: {option}")
+    for criterion in criteria:
+        scores[option][criterion] = get_float(f"  Rate {criterion} (0-10): ", 0, 10)
+
+# Step 4: Calculate and display results
+print("\nCalculating results...")
+results = {}
+for option in options:
+    total_score = 0
+    for criterion, weight in weights.items():
+        total_score += scores[option][criterion] * weight
+    results[option] = round(total_score, 2)
+
+# Display final results
+print("\nFinal Outfit Scores:")
+for option, score in sorted(results.items(), key=lambda x: x[1], reverse=True):
+    print(f"{option}: {score}")
+
+# Suggest the best option
+best_option = max(results, key=results.get)
+print(f"\nRecommended outfit: {best_option}")
+
